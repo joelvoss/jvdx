@@ -22,5 +22,5 @@ export async function jest(opts: any) {
 
   const args = parseArgs(opts, ['watch', 'quiet']);
 
-  await run([...config, ...watch, ...args]);
+  await run([...config, ...watch, '--passWithNoTests', ...args]);
 }
