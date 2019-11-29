@@ -55,10 +55,10 @@ export function build(input: string, opts: any) {
   const exclude = opts['ignore'] ? opts['ignore'].split(',') : [];
 
   const files = glob
-  .sync(input, { nodir: true, ignore: exclude })
-  .filter(filepath => {
-    return !filepath.endsWith('.d.ts') && !filepath.includes('README');
-  });
+    .sync(input, { nodir: true, ignore: exclude })
+    .filter(filepath => {
+      return !filepath.endsWith('.d.ts') && !filepath.includes('README');
+    });
 
   if (files.length === 0) {
     babelGlobErrorMsg(input);
