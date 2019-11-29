@@ -208,7 +208,7 @@ export function validateErrorMsg() {
 
 export function setupTemplateSuccessMsg(template: string) {
   console.log(
-    `${chalk.green(
+    `${getTimeStamp()} ${chalk.green(
       '✓',
     )} Successfully scaffolded a ${template} project example for you`,
   );
@@ -262,6 +262,17 @@ export function setupGitErrorMsg(dir: string) {
     `${getTimeStamp()} ${chalk.red(
       '✗',
     )} Error initializing Git repository in ${dir}`,
+  );
+}
+
+export function setupHuskySuccessMsg() {
+  console.log(
+    `${getTimeStamp()} ${chalk.green('✓')} Installed husky commit hooks`,
+  );
+}
+export function setupHuskyErrorMsg() {
+  console.log(
+    `${getTimeStamp()} ${chalk.red('✗')} Could not install husky commit hooks`,
   );
 }
 

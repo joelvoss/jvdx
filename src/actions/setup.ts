@@ -9,6 +9,8 @@ import {
   setupSuccessMsg,
   setupGitErrorMsg,
   setupGitSuccessMsg,
+  setupHuskyErrorMsg,
+  setupHuskySuccessMsg,
   setupInstallDevDepsErrorMsg,
   setupInstallDepsErrorMsg,
   setupUpdateJsonSuccessMsg,
@@ -26,9 +28,12 @@ export async function setup(template: string, opts: any) {
   welcomeMsg('setup');
 
   let errorCount = 0;
+  const isReact = template === 'react';
+  const isJs = template === 'javascript';
+  const isTs = template === 'typescript';
 
   // Scaffold the desired template
-  if (template !== 'none') {
+  if (isReact || isJs || isTs) {
     try {
       await fs.copy(hereRelative(`../templates/${template}`), appDir, {
         overwrite: true,
@@ -58,10 +63,12 @@ export async function setup(template: string, opts: any) {
         `  extends: ['./node_modules/jvdx/dist/configs/eslintrc'],\n` +
         `};`,
     },
-    {
-      dest: path.resolve(appDir, './tsconfig.json'),
-      content: fs.readFileSync(hereRelative('../configs/tsconfig')),
-    },
+    isTs || isReact
+      ? {
+          dest: path.resolve(appDir, './tsconfig.json'),
+          content: fs.readFileSync(hereRelative('../configs/tsconfig')),
+        }
+      : null,
   ].filter(Boolean) as { dest: string; content: Buffer | string }[];
 
   for (let f of files) {
@@ -77,17 +84,22 @@ export async function setup(template: string, opts: any) {
   // Modify the parent package.json and add all jvdx scripts to it.
   const newPackageJson = {
     ...packageJson,
+    license: `MIT`,
     scripts: {
       ...packageJson!.scripts,
-      'build:rollup': `jvdx build rollup 'src/index.ts'`,
-      'build:babel': 'jvdx build babel src/**/*',
+      ...(isReact
+        ? { 'build:rollup': `jvdx build rollup 'src/index.tsx'` }
+        : {}),
+      ...(isTs ? { 'build:rollup': `jvdx build rollup 'src/index.ts'` } : {}),
+      ...(isJs ? { 'build:rollup': `jvdx build rollup 'src/index.js'` } : {}),
+      ...(isTs || isJs ? { 'build:babel': `jvdx build babel 'src/**/*'` } : {}),
       lint: 'jvdx lint',
       format: 'jvdx format',
       test: 'jvdx test',
       validate: 'npm run format && npm run lint && npm run test',
       clean: 'jvdx clean',
     },
-    peerDependencies: template === 'react' ? { react: '>=16' } : {},
+    ...(isReact ? { peerDependencies: { react: '>=16' } } : {}),
     husky: {
       hooks: {
         'pre-commit': 'jvdx pre-commit',
@@ -107,34 +119,38 @@ export async function setup(template: string, opts: any) {
   const { cmd, args } = yarnOrNpm();
 
   const dep = [
-    template === 'react' && !hasDep('react') ? 'react' : null,
-    template === 'react' && !hasDep('react-dom') ? 'react-dom' : null,
+    isReact && !hasDep('react') ? 'react' : null,
+    isReact && !hasDep('react-dom') ? 'react-dom' : null,
   ]
     .filter(Boolean)
     .sort() as string[];
-  const installDeps = spawn.sync(cmd, [...args, ...dep], { stdio: 'inherit' });
-  if (installDeps.status !== 0) {
-    ++errorCount;
-    setupInstallDepsErrorMsg();
+
+  if (dep.length !== 0) {
+    const installDeps = spawn.sync(cmd, [...args, ...dep], {
+      stdio: 'inherit',
+    });
+    if (installDeps.status !== 0) {
+      ++errorCount;
+      setupInstallDepsErrorMsg();
+    }
   }
 
   const devDep = [
-    !hasDep('@types/jest') ? '@types/jest' : null,
-    !hasDep('husky') ? 'husky' : null,
-    !hasDep('typescript') ? 'typescript' : null,
-    template === 'react' && !hasDep('@types/react') ? '@types/react' : null,
-    template === 'react' && !hasDep('@types/react-dom')
-      ? '@types/react-dom'
-      : null,
+    isTs || (isReact && !hasDep('@types/jest')) ? '@types/jest' : null,
+    isTs && !hasDep('typescript') ? 'typescript' : null,
+    isReact && !hasDep('@types/react') ? '@types/react' : null,
+    isReact && !hasDep('@types/react-dom') ? '@types/react-dom' : null,
   ]
     .filter(Boolean)
     .sort() as string[];
-  const installDevDeps = spawn.sync(cmd, [...args, ...devDep], {
-    stdio: 'inherit',
-  });
-  if (installDevDeps.status !== 0) {
-    ++errorCount;
-    setupInstallDevDepsErrorMsg();
+  if (devDep.length !== 0) {
+    const installDevDeps = spawn.sync(cmd, [...args, ...devDep, '--dev'], {
+      stdio: 'inherit',
+    });
+    if (installDevDeps.status !== 0) {
+      ++errorCount;
+      setupInstallDevDepsErrorMsg();
+    }
   }
 
   // Try setting up an empty Git repository
@@ -144,6 +160,21 @@ export async function setup(template: string, opts: any) {
   } else {
     ++errorCount;
     setupGitErrorMsg(appDir);
+  }
+
+  // Try installing husky commit hooks
+  const husky = spawn.sync(
+    'node',
+    ['./node_modules/husky/husky.js', 'install'],
+    {
+      stdio: 'ignore',
+    },
+  );
+  if (husky.status === 0) {
+    setupHuskySuccessMsg();
+  } else {
+    ++errorCount;
+    setupHuskyErrorMsg();
   }
 
   if (errorCount === 0) {

@@ -25,7 +25,7 @@ prog
       type: 'select',
       name: 'template',
       message: 'Pick a starter template',
-      choices: ['Basic', 'React', 'None'],
+      choices: ['React', 'Javascript', 'Typescript', 'Empty'],
     }).catch(() => {
       process.exit(1);
     })) as { template: string };
