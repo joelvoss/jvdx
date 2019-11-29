@@ -4,6 +4,14 @@
   "description": "CLI toolbox for common scripts and tasks for JS/TS projects",
   "author": "Joel Voß <mail@joelvoss.com>",
   "license": "MIT",
+  "homepage": "https://github.com/joelvoss/jvdx",
+  "bugs": {
+    "url": "https://github.com/joelvoss/jvdx/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joelvoss/jvdx.git"
+  },
   "main": "dist/index.js",
   "bin": {
     "jvdx": "dist/index.js"
