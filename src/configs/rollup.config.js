@@ -22,6 +22,12 @@ const {
   getWatchInclude,
 } = require('../utils');
 
+// requireUncached requires modules without cache hits
+const requireUncached = module => {
+  delete require.cache[require.resolve(module)];
+  return require(module);
+};
+
 // Parse environment variables
 const outputDir = parseEnv('BUILD_OUTPUT', 'dist');
 const watchMode = parseEnv('BUILD_WATCHMODE', false);
@@ -104,7 +110,9 @@ const useBuiltinConfig =
   !hasFile('.babelrc.js') &&
   !hasFile('babel.config.js') &&
   !hasPkgProp('babel');
-const babelrc = useBuiltinConfig ? require('../configs/babelrc.js') : null;
+const babelrc = useBuiltinConfig
+  ? requireUncached('../configs/babelrc.js')
+  : null;
 
 const replacements = Object.entries(
   umd ? process.env : omit(process.env, ['NODE_ENV']),
