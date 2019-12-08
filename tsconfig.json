@@ -1,6 +1,6 @@
 {
   "include": ["src/**/*"],
-  "exclude": ["src/template/**/*"],
+  "exclude": ["src/template/**/*", "**/__tests__/**"],
   "compilerOptions": {
     "allowJs": true,
     "jsx": "react",
