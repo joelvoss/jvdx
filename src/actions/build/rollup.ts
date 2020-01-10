@@ -128,12 +128,7 @@ export async function build(input: string, opts: any) {
     // ...else watch it
     rollupWatchMsg();
     watch(rollupOptions).on('event', async event => {
-      // if (event.code === 'START') {
-      // }
       if (event.code === 'ERROR') {
-        rollupWatchError(event.code, event.error);
-      }
-      if (event.code === 'FATAL') {
         rollupWatchError(event.code, event.error);
       }
       if (event.code === 'END') {
