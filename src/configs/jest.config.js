@@ -36,9 +36,9 @@ const jestConfig = {
   ],
   transform: {
     ...(useBuiltInBabelConfig
-      ? { '^.+\\.js$': here('./babel-transform') }
+      ? { '^.+\\.(js|jsx)$': here('./babel-transform') }
       : {}),
-    '.(ts|tsx)': require.resolve('ts-jest/dist'),
+    '^.+\\.(ts|tsx)$': require.resolve('ts-jest/dist'),
   },
 };
 
