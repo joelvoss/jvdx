@@ -28,11 +28,10 @@ const envTargets = isTest
   : isWebpack || isRollup
   ? { browsers: browsersConfig }
   : { node: getNodeVersion(packageJson) };
-const envOptions = { modules: false, loose: true, targets: envTargets };
 
 module.exports = {
   presets: [
-    ['@babel/preset-env', envOptions],
+    ['@babel/preset-env', { modules: false, loose: true, targets: envTargets }],
     ifAnyDep(['react'], ['@babel/preset-react']),
     isTS ? ['@babel/preset-typescript'] : null,
   ].filter(Boolean),
@@ -47,15 +46,9 @@ module.exports = {
     // Enable the class properties proposal
     ['@babel/plugin-proposal-class-properties', { loose: true }],
 
-    // Enable the rest and spread operators proposal
-    ['@babel/plugin-proposal-object-rest-spread'],
-
     // Inlines bindings when possible. Tries to evaluate expressions and prunes
     // unreachable as a result
     ['babel-plugin-minify-dead-code-elimination'],
-
-    // If we are transpiling typsescript, enable the optional chaining proposal
-    isTS ? ['@babel/plugin-proposal-optional-chaining'] : null,
 
     // Plugin to add a new resolver for your modules when compiling your code
     // using Babel, e.g. a new "root" directory defined by the `alias` setting
@@ -82,8 +75,8 @@ module.exports = {
     // If we are building for the browser, inline process.env variables.
     isUMD ? ['babel-plugin-transform-inline-environment-variables'] : null,
 
-    // If we are *not* treeshaking, e.g. using Rollup or Webpack, transform the
-    // module syntax to commonjs
+    // If we are *not* treeshaking, e.g. *not* using Rollup or Webpack,
+    // transform the module syntax to commonjs
     !treeshake ? ['@babel/plugin-transform-modules-commonjs'] : null,
   ].filter(Boolean),
 };
