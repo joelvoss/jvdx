@@ -1,7 +1,8 @@
 const path = require('path');
 const glob = require('glob');
-const camelcase = require('lodash/camelCase');
+const camelCase = require('lodash/camelCase');
 const capitalize = require('lodash/capitalize');
+const upperFirst = require('lodash/upperFirst');
 const omit = require('lodash/omit');
 const replace = require('@rollup/plugin-replace');
 const rollupBabel = require('rollup-plugin-babel');
@@ -35,7 +36,7 @@ const minify = parseEnv('BUILD_MINIFY', false);
 const sourcemap = parseEnv('BUILD_SOURCEMAP', false);
 const format = parseEnv('BUILD_FORMAT');
 const isNode = parseEnv('BUILD_NODE', false);
-const name = parseEnv('BUILD_NAME', capitalize(camelcase(packageJson.name)));
+const name = parseEnv('BUILD_NAME', upperFirst(camelCase(packageJson.name)));
 const filenameSuffix = parseEnv('BUILD_FILENAME_SUFFIX', '');
 const filenamePrefix = parseEnv('BUILD_FILENAME_PREFIX', '');
 const buildInput = parseEnv('BUILD_INPUT', 'src/index.ts');
@@ -44,7 +45,7 @@ const buildInput = parseEnv('BUILD_INPUT', 'src/index.ts');
 const globals = parseEnv(
   'BUILD_GLOBALS',
   Object.keys(packageJson.peerDependencies || {}).reduce((deps, dep) => {
-    deps[dep] = capitalize(camelcase(dep));
+    deps[dep] = capitalize(camelCase(dep));
     return deps;
   }, {}),
 );
