@@ -26,5 +26,6 @@
 
     /* Advanced Options */
     "jsx": "react"
+    "target": "ES6"
   }
 }
