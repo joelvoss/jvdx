@@ -26,7 +26,7 @@
     "esModuleInterop": true,
 
     /* Advanced Options */
-    "jsx": "react"
+    "jsx": "react",
     "target": "ES6"
   }
 }
