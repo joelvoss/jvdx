@@ -12,12 +12,12 @@
   },
   "alias": {
     "react": "../node_modules/react",
-    "react-dom": "../node_modules/react-dom"
+    "react-dom": "../node_modules/react-dom",
+    "@types/react": "../node_modules/@types/react",
+    "@types/react-dom": "../node_modules/@types/react-dom",
+    "typescript": "../node_modules/typescript"
   },
   "devDependencies": {
-    "@types/react": "16.9.19",
-    "@types/react-dom": "16.9.5",
-    "parcel": "1.12.4",
-    "typescript": "3.7.5"
+    "parcel": "1.12.4"
   }
 }
