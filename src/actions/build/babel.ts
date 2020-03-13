@@ -68,8 +68,9 @@ export function build(input: string, opts: any) {
   const outputDir = opts['out-dir'];
 
   // Should we clean the output directory?
-  if (opts['clean']) {
-    rimraf.sync(fromRoot(opts['out-dir']));
+  const cleanBuildDirs = opts['clean'];
+  if (cleanBuildDirs) {
+    rimraf.sync(fromRoot(outputDir));
   }
 
   const result = new Map();
