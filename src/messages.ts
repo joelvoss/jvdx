@@ -42,6 +42,7 @@ export function rollupBuildStartMsg() {
     `${getTimeStamp()} ○ Compiling bundles with Rollup...\r`,
   );
 }
+
 export function rollupBuildSuccessMsg(fileCount: number) {
   console.log(
     `${getTimeStamp()} ${chalk.green(
@@ -93,7 +94,6 @@ export function rollupWatchMsg() {
       '(ctrl+c to exit)',
     )}`,
   );
-  console.log();
 }
 
 export function babelGlobErrorMsg(pattern: string) {
@@ -244,11 +244,6 @@ export function setupUpdateJsonErrorMsg(path: string, err: string) {
   );
 }
 
-export function setupInstallDepsErrorMsg() {
-  console.log(
-    `${getTimeStamp()} ${chalk.red('✗')} Error installing dependencies`,
-  );
-}
 export function setupInstallDevDepsErrorMsg() {
   console.log(
     `${getTimeStamp()} ${chalk.red('✗')} Error installing devDependencies`,

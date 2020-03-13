@@ -12,7 +12,6 @@ import {
   setupHuskyErrorMsg,
   setupHuskySuccessMsg,
   setupInstallDevDepsErrorMsg,
-  setupInstallDepsErrorMsg,
   setupUpdateJsonSuccessMsg,
   setupUpdateJsonErrorMsg,
   setupFilesSuccessMsg,
@@ -88,18 +87,26 @@ export async function setup(template: string, opts: any) {
     scripts: {
       ...packageJson!.scripts,
       ...(isReact
-        ? { 'build:rollup': `jvdx build rollup 'src/index.tsx'` }
+        ? { 'build:rollup': `jvdx build rollup 'src/index.tsx' -c` }
         : {}),
-      ...(isTs ? { 'build:rollup': `jvdx build rollup 'src/index.ts'` } : {}),
-      ...(isJs ? { 'build:rollup': `jvdx build rollup 'src/index.js'` } : {}),
-      ...(isTs || isJs ? { 'build:babel': `jvdx build babel 'src/**/*'` } : {}),
+      ...(isTs
+        ? { 'build:rollup': `jvdx build rollup 'src/index.ts' -c` }
+        : {}),
+      ...(isJs
+        ? { 'build:rollup': `jvdx build rollup 'src/index.js' -c` }
+        : {}),
+      ...(isTs || isJs
+        ? { 'build:babel': `jvdx build babel 'src/**/*' -c` }
+        : {}),
       lint: 'jvdx lint',
       format: 'jvdx format',
       test: 'jvdx test',
       validate: 'npm run format && npm run lint && npm run test',
       clean: 'jvdx clean',
     },
-    ...(isReact ? { peerDependencies: { react: '>=16' } } : {}),
+    ...(isReact
+      ? { peerDependencies: { react: '>=16.8', 'react-dom': '>=16.8' } }
+      : {}),
     husky: {
       hooks: {
         'pre-commit': 'jvdx pre-commit',
@@ -115,29 +122,14 @@ export async function setup(template: string, opts: any) {
     setupUpdateJsonErrorMsg(destJsonPath, err.message);
   }
 
-  // TODO: Install missing dependencies
+  // Install missing dependencies
   const { cmd, args } = yarnOrNpm();
-
-  const dep = [
-    isReact && !hasDep('react') ? 'react' : null,
-    isReact && !hasDep('react-dom') ? 'react-dom' : null,
-  ]
-    .filter(Boolean)
-    .sort() as string[];
-
-  if (dep.length !== 0) {
-    const installDeps = spawn.sync(cmd, [...args, ...dep], {
-      stdio: 'inherit',
-    });
-    if (installDeps.status !== 0) {
-      ++errorCount;
-      setupInstallDepsErrorMsg();
-    }
-  }
 
   const devDep = [
     isTs || (isReact && !hasDep('@types/jest')) ? '@types/jest' : null,
     isTs && !hasDep('typescript') ? 'typescript' : null,
+    isReact && !hasDep('react') ? 'react' : null,
+    isReact && !hasDep('react-dom') ? 'react-dom' : null,
     isReact && !hasDep('@types/react') ? '@types/react' : null,
     isReact && !hasDep('@types/react-dom') ? '@types/react-dom' : null,
   ]
