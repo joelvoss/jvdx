@@ -37,6 +37,11 @@ export function runtimeHelperMsg() {
   console.log();
 }
 
+export function rollupBuildStartMsg() {
+  process.stdout.write(
+    `${getTimeStamp()} ○ Compiling bundles with Rollup...\r`,
+  );
+}
 export function rollupBuildSuccessMsg(fileCount: number) {
   console.log(
     `${getTimeStamp()} ${chalk.green(

@@ -12,6 +12,7 @@ import {
   rollupBuildSuccessMsg,
   generateTypeDefSuccessMsg,
   generateTypeDefErrorMsg,
+  rollupBuildStartMsg,
 } from '../../messages';
 
 // requireUncached requires modules without cache hits
@@ -128,6 +129,9 @@ export async function build(input: string, opts: any) {
     // ...else watch it
     rollupWatchMsg();
     watch(rollupOptions).on('event', async event => {
+      if (event.code === 'START') {
+        rollupBuildStartMsg();
+      }
       if (event.code === 'ERROR') {
         rollupWatchError(event.code, event.error);
       }
