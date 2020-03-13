@@ -79,14 +79,22 @@ function externalPredicate(id) {
 }
 
 const input = glob.sync(fromRoot(buildInput));
-const codeSplitting = input.length > 1;
-
 const dirpath = path.join(...[filenamePrefix, outputDir].filter(Boolean));
 
-const filename = [
-  packageJson.name,
+const entryFileNames = [
+  '[name]',
   filenameSuffix,
-  `.${format}`,
+  `.[format]`,
+  minify ? '.min' : null,
+  '.js',
+]
+  .filter(Boolean)
+  .join('');
+
+const chunkFileNames = [
+  '[name]-[hash]',
+  filenameSuffix,
+  `.[format]`,
   minify ? '.min' : null,
   '.js',
 ]
@@ -96,9 +104,9 @@ const filename = [
 const output = [
   {
     name,
-    ...(codeSplitting
-      ? { dir: path.join(dirpath, format) }
-      : { file: path.join(dirpath, filename) }),
+    dir: path.join(dirpath, format),
+    entryFileNames,
+    chunkFileNames,
     format: esm ? 'es' : format,
     exports: esm ? 'named' : 'auto',
     globals,
@@ -132,7 +140,7 @@ const replacements = Object.entries(
 const shebangCache = {};
 
 module.exports = {
-  input: codeSplitting ? input : input[0],
+  input: input.length > 1 ? input : input[0],
   output,
   external: externalPredicate,
   plugins: [
