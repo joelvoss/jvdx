@@ -128,6 +128,16 @@ export function babelBuildErrorMsg(error: any) {
   error.frame && console.log(`${getTimeStamp()}   ${error.frame}`);
 }
 
+export function babelCopySuccessMsg(files: string) {
+  console.log(`${getTimeStamp()} ${chalk.green('✓')} Copied "${files}"`);
+}
+
+export function babelCopyErrorMsg(files: string) {
+  console.log(
+    `${getTimeStamp()} ${chalk.red('✗')} Error(s) while copying ${files}`,
+  );
+}
+
 export function cleanSuccessMsg(files: string[]) {
   files.forEach(f =>
     console.log(`${getTimeStamp()} ${chalk.green('✓')} Removed ${f}`),

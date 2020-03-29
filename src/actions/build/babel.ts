@@ -4,6 +4,7 @@ import * as fs from 'fs-extra';
 import * as spawn from 'cross-spawn';
 import rimraf from 'rimraf';
 import glob from 'glob';
+import copyfiles from 'copyfiles';
 import { loadOptions, transformFileSync, TransformOptions } from '@babel/core';
 import { hasFile, hasPkgProp, fromRoot, resolveBin, hasDep } from '../../utils';
 import {
@@ -15,6 +16,8 @@ import {
   babelBuildErrorMsg,
   generateTypeDefSuccessMsg,
   generateTypeDefErrorMsg,
+  babelCopyErrorMsg,
+  babelCopySuccessMsg,
 } from '../../messages';
 
 // requireUncached requires modules without cache hits
@@ -23,7 +26,7 @@ const requireUncached = (module: string) => {
   return require(module);
 };
 
-export function build(input: string, opts: any) {
+export async function build(input: string, opts: any) {
   welcomeMsg('build babel');
 
   // Check if we are using the @babel/runtime helper when building UMD.
@@ -52,10 +55,12 @@ export function build(input: string, opts: any) {
     ? requireUncached('../../configs/babelrc.js')
     : null;
 
+  const copyFiles = opts['copy-files'] ? opts['copy-files'].split(',') : [];
+
   const exclude = opts['ignore'] ? opts['ignore'].split(',') : [];
 
   const files = glob
-    .sync(input, { nodir: true, ignore: exclude })
+    .sync(input, { nodir: true, ignore: [...exclude, ...copyFiles] })
     .filter(filepath => {
       return !filepath.endsWith('.d.ts') && !filepath.includes('README');
     });
@@ -71,6 +76,24 @@ export function build(input: string, opts: any) {
   const cleanBuildDirs = opts['clean'];
   if (cleanBuildDirs) {
     rimraf.sync(fromRoot(outputDir));
+  }
+
+  // Copy files
+  if (copyFiles.length) {
+    await new Promise((resolve) => {
+      copyfiles(
+        [...copyFiles, fromRoot(outputDir)],
+        { up: 1, error: true },
+        (err) => {
+          if (err != null) {
+            babelCopyErrorMsg(copyFiles);
+          } else {
+            babelCopySuccessMsg(copyFiles);
+          }
+          resolve();
+        }
+      );
+    });
   }
 
   const result = new Map();

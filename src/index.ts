@@ -91,10 +91,15 @@ prog
     '**/node_modules/**,**/__tests__/**,**/__mocks__/**',
   )
   .example('build babel [input] --ignore <list>')
+  .option(
+    '--copy-files',
+    'List of paths to exclude from processing and copy into out-dir',
+  )
+  .example('build babel [input] --copy-files <list>')
   .option('-c --clean', `Clean output directory`)
   .example('build babel [input] --clean')
-  .action((input: string, opts: any) => {
-    const status = babel(input, opts);
+  .action(async (input: string, opts: any) => {
+    const status = await babel(input, opts);
     console.log();
     process.exit(status);
   });
