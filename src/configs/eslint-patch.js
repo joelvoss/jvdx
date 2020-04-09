@@ -33,14 +33,14 @@ if (!ConfigArrayFactory.__patched) {
   const ModuleResolver = require(moduleResolverPath);
 
   const originalLoadPlugin = ConfigArrayFactory.prototype._loadPlugin;
-  ConfigArrayFactory.prototype._loadPlugin = function(
+  ConfigArrayFactory.prototype._loadPlugin = function (
     name,
     importerPath,
     importerName,
   ) {
     const originalResolve = ModuleResolver.resolve;
     try {
-      ModuleResolver.resolve = function(moduleName, relativeToPath) {
+      ModuleResolver.resolve = function (moduleName, relativeToPath) {
         // resolve using importerPath instead of relativeToPath
         return originalResolve.call(this, moduleName, importerPath);
       };
