@@ -5,12 +5,11 @@ const capitalize = require('lodash/capitalize');
 const upperFirst = require('lodash/upperFirst');
 const omit = require('lodash/omit');
 const replace = require('@rollup/plugin-replace');
-const rollupBabel = require('rollup-plugin-babel');
-const nodeBuiltIns = require('rollup-plugin-node-builtins');
-const nodeGlobals = require('rollup-plugin-node-globals');
+const { babel } = require('@rollup/plugin-babel');
 const { DEFAULT_EXTENSIONS } = require('@babel/core');
 const commonjs = require('@rollup/plugin-commonjs');
 const nodeResolve = require('@rollup/plugin-node-resolve');
+const builtins = require('builtin-modules');
 const json = require('@rollup/plugin-json');
 const { eslint } = require('rollup-plugin-eslint');
 const { terser } = require('rollup-plugin-terser');
@@ -35,7 +34,6 @@ const watchMode = parseEnv('BUILD_WATCHMODE', false);
 const minify = parseEnv('BUILD_MINIFY', false);
 const sourcemap = parseEnv('BUILD_SOURCEMAP', false);
 const format = parseEnv('BUILD_FORMAT');
-const isNode = parseEnv('BUILD_NODE', false);
 const name = parseEnv('BUILD_NAME', upperFirst(camelCase(packageJson.name)));
 const filenameSuffix = parseEnv('BUILD_FILENAME_SUFFIX', '');
 const filenamePrefix = parseEnv('BUILD_FILENAME_PREFIX', '');
@@ -61,7 +59,7 @@ const cjs = format === 'cjs';
 // Generate list of external dependencies
 const deps = Object.keys(packageJson.dependencies || {});
 const peerDeps = Object.keys(packageJson.peerDependencies || {});
-const defaultExternal = umd ? peerDeps : deps.concat(peerDeps);
+const defaultExternal = umd ? peerDeps : deps.concat(peerDeps, builtins);
 const external = parseEnv('BUILD_EXTERNAL', defaultExternal).filter(
   (e, i, arry) => arry.indexOf(e) === i,
 );
@@ -107,7 +105,7 @@ const output = [
     dir: path.join(dirpath, format),
     entryFileNames,
     chunkFileNames,
-    format: esm ? 'es' : format,
+    format,
     exports: esm ? 'named' : 'auto',
     globals,
     sourcemap,
@@ -144,10 +142,7 @@ module.exports = {
   output,
   external: externalPredicate,
   plugins: [
-    isNode ? nodeBuiltIns() : null,
-    isNode ? nodeGlobals() : null,
     nodeResolve({
-      preferBuiltins: isNode,
       mainFields: ['module', 'main', 'jsnext', 'browser'],
       extensions,
     }),
@@ -156,11 +151,11 @@ module.exports = {
     eslint({
       throwOnError: true,
     }),
-    rollupBabel({
+    babel({
       presets: babelrc.presets,
       plugins: babelrc.plugins,
       babelrc: !useBuiltinConfig,
-      runtimeHelpers: useBuiltinConfig,
+      babelHelpers: useBuiltinConfig ? 'runtime' : 'bundled',
       extensions,
     }),
     replace(replacements),

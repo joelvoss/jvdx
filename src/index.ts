@@ -88,7 +88,7 @@ prog
   .option(
     '--ignore',
     'List of paths to exclude from processing',
-    '**/node_modules/**,**/__tests__/**,**/__mocks__/**',
+    '**/node_modules/**,**/__mocks__/**,**/__tests__/**,**/__fixtures__/**,**/__coverage__/**',
   )
   .example('build babel [input] --ignore <list>')
   .option(

@@ -189,7 +189,10 @@ Build your project using Babel
 
 - `--ignore`  
   List of paths to exclude from processing
-  (default: `**/node_modules/**,**/__tests__/**,**/__mocks__/**`)
+  (default: `**/node_modules/**,**/__mocks__/**,**/__tests__/**,**/__fixtures__/**,**/__coverage__/**`)
+
+- `--copy-files`  
+  List of paths to exclude from processing and copy into out-dir
 
 - `-c, --clean`  
   Clean output directory
@@ -203,6 +206,7 @@ Build your project using Babel
 $ jvdx build babel "src/**/*"
 $ jvdx build babel [input] --out-dir <dirname>
 $ jvdx build babel [input] --ignore <list>
+$ jvdx build babel [input] --copy-files <list>
 $ jvdx build babel [input] --clean
 ```
 
