@@ -19,8 +19,9 @@ const alias = parseEnv('BUILD_ALIAS');
  * @see https://github.com/browserslist/browserslist/blob/master/node.js#L139
  */
 const browsersConfig = browserslist.loadConfig({ path: appDir }) || [
-  'ie 10',
-  'ios 7',
+  'last 2 versions',
+  'not dead',
+  '> 0.2%',
 ];
 
 const envTargets = isTest
@@ -31,7 +32,10 @@ const envTargets = isTest
 
 module.exports = {
   presets: [
-    ['@babel/preset-env', { modules: false, loose: true, targets: envTargets }],
+    [
+      '@babel/preset-env',
+      { modules: false, loose: true, targets: envTargets, bugfixes: true },
+    ],
     ifAnyDep(['react'], ['@babel/preset-react']),
     isTS ? ['@babel/preset-typescript'] : null,
   ].filter(Boolean),
