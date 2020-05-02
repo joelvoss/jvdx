@@ -117,7 +117,9 @@ export async function setup(template: string, opts: any) {
     files: ['dist'],
     scripts: {
       ...packageJson!.scripts,
-      taskfile: './Taskfile.sh',
+      start: './Taskfile.sh',
+      test: './Taskfile.sh test',
+      prepublish: './Taskfile.sh build',
     },
     ...(isReact
       ? { peerDependencies: { react: '>=16.8', 'react-dom': '>=16.8' } }
