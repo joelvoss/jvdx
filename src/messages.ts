@@ -5,9 +5,9 @@ function getTimeStamp() {
   const pad = (number: number) => (number < 10 ? '0' + number : number);
   const date = new Date(Date.now());
   const timeStr =
-    `${pad(date.getUTCHours())}:` +
-    `${pad(date.getUTCMinutes())}:` +
-    `${pad(date.getUTCSeconds())}`;
+    `${pad(date.getHours())}:` +
+    `${pad(date.getMinutes())}:` +
+    `${pad(date.getSeconds())}`;
   return chalk.dim(`[${timeStr}]`);
 }
 
