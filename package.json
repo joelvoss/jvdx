@@ -21,9 +21,8 @@
     "templates"
   ],
   "scripts": {
-    "build": "rm -rf dist && tsc -p tsconfig.json && npm run copy",
-    "copy": "npm run copy:configs && npm run copy:templates",
-    "copy:configs": "copyfiles -u 2 src/configs/*ignore src/configs/tsconfig dist/configs",
+    "taskfile": "./Taskfile.sh",
+    "prepublish": "./Taskfile.sh build"
     "copy:templates": "copyfiles -a \"templates/**/*\" \"dist/\"",
     "lint": "node dist/index.js lint",
     "format": "node dist/index.js format",

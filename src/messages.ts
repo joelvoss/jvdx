@@ -260,6 +260,21 @@ export function setupInstallDevDepsErrorMsg() {
   );
 }
 
+export function setupChmodSuccessMsg(filename: string) {
+  console.log(
+    `${getTimeStamp()} ${chalk.green(
+      '✓',
+    )} Changed access permisson to +x on ${filename}`,
+  );
+}
+export function setupChmodErrorMsg(filename: string) {
+  console.log(
+    `${getTimeStamp()} ${chalk.red(
+      '✗',
+    )} Error changing access permissions on ${filename}`,
+  );
+}
+
 export function setupGitSuccessMsg(dir: string) {
   console.log(
     `${getTimeStamp()} ${chalk.green(

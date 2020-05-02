@@ -9,6 +9,8 @@ import {
   setupSuccessMsg,
   setupGitErrorMsg,
   setupGitSuccessMsg,
+  setupChmodSuccessMsg,
+  setupChmodErrorMsg,
   setupHuskyErrorMsg,
   setupHuskySuccessMsg,
   setupInstallDevDepsErrorMsg,
@@ -52,6 +54,10 @@ export async function setup(template: string, opts: any) {
       content: fs.readFileSync(hereRelative('../configs/gitignore')),
     },
     {
+      dest: path.resolve(appDir, './.gcloudignore'),
+      content: fs.readFileSync(hereRelative('../configs/gcloudignore')),
+    },
+    {
       dest: path.resolve(appDir, './.prettierrc.js'),
       content: fs.readFileSync(hereRelative('../configs/prettierrc.js')),
     },
@@ -68,6 +74,10 @@ export async function setup(template: string, opts: any) {
           content: fs.readFileSync(hereRelative('../configs/tsconfig')),
         }
       : null,
+    {
+      dest: path.resolve(appDir, './Taskfile.sh'),
+      content: fs.readFileSync(hereRelative('../configs/Taskfile')),
+    },
   ].filter(Boolean) as { dest: string; content: Buffer | string }[];
 
   for (let f of files) {
@@ -80,29 +90,34 @@ export async function setup(template: string, opts: any) {
     }
   }
 
+  // Make Taskfile executable
+  const chmod = spawn.sync(
+    'chmod',
+    ['+x', path.resolve(appDir, './Taskfile.sh')],
+    { stdio: 'ignore' },
+  );
+  if (chmod.status === 0) {
+    setupChmodSuccessMsg(path.resolve(appDir, './Taskfile.sh'));
+  } else {
+    ++errorCount;
+    setupChmodErrorMsg(path.resolve(appDir, './Taskfile.sh'));
+  }
+
   // Modify the parent package.json and add all jvdx scripts to it.
   const newPackageJson = {
     ...packageJson,
+    version: '0.0.0',
+    description: 'Short description of this application',
+    author: 'Name Surname <email@address.com>',
+    private: true,
     license: `MIT`,
+    main: 'dist/cjs/index.cjs.js',
+    module: 'dist/esm/index.es.js',
+    ...(isTs ? { typings: 'dist/types/index.d.ts' } : {}),
+    files: ['dist'],
     scripts: {
       ...packageJson!.scripts,
-      ...(isReact
-        ? { 'build:rollup': `jvdx build rollup 'src/index.tsx' -c` }
-        : {}),
-      ...(isTs
-        ? { 'build:rollup': `jvdx build rollup 'src/index.ts' -c` }
-        : {}),
-      ...(isJs
-        ? { 'build:rollup': `jvdx build rollup 'src/index.js' -c` }
-        : {}),
-      ...(isTs || isJs
-        ? { 'build:babel': `jvdx build babel 'src/**/*' -c` }
-        : {}),
-      lint: 'jvdx lint',
-      format: 'jvdx format',
-      test: 'jvdx test',
-      validate: 'npm run format && npm run lint && npm run test',
-      clean: 'jvdx clean',
+      taskfile: './Taskfile.sh',
     },
     ...(isReact
       ? { peerDependencies: { react: '>=16.8', 'react-dom': '>=16.8' } }
