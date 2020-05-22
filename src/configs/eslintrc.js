@@ -1,4 +1,4 @@
-require('./eslint-patch');
+// require('./eslint-patch');
 
 const fs = require('fs');
 const readPkgUp = require('read-pkg-up');
