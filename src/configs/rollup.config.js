@@ -8,7 +8,7 @@ const replace = require('@rollup/plugin-replace');
 const { babel } = require('@rollup/plugin-babel');
 const { DEFAULT_EXTENSIONS } = require('@babel/core');
 const commonjs = require('@rollup/plugin-commonjs');
-const nodeResolve = require('@rollup/plugin-node-resolve');
+const resolve = require('@rollup/plugin-node-resolve');
 const builtins = require('builtin-modules');
 const json = require('@rollup/plugin-json');
 const { eslint } = require('rollup-plugin-eslint');
@@ -142,7 +142,7 @@ module.exports = {
   output,
   external: externalPredicate,
   plugins: [
-    nodeResolve({
+    resolve({
       mainFields: ['module', 'main', 'jsnext', 'browser'],
       extensions,
     }),
