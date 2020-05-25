@@ -42,7 +42,7 @@ function validate {
 }
 
 function clean {
-  node dist/index.js clean "${@:1}"
+  node dist/index.js clean dist "${@:1}"
 }
 
 # //////////////////////////////////////////////////////////////////////////////
