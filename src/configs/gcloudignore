@@ -5,15 +5,19 @@
 
 # Misc
 .DS_Store
-.env
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 LICENSE
 README.md
+.eslintrc.js
+.prettierrc.js
 
 # Dependencies
 node_modules/
+
+# Does more harm than good
+package-lock.json
 
 # Testing
 coverage/
@@ -22,14 +26,5 @@ __tests__/
 __fixtures__/
 __coverage__/
 
-# Sources (executable files should live in ./dist)
-src/
-Makefile
-Taskfile.sh
-.eslintrc.js
-.prettierrc.js
-tsconfig.json
+# Custom (add custom excludes here)
 
-# Does more harm than good
-package-lock.json
-yarn.lock

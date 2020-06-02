@@ -3,6 +3,7 @@
 # Misc
 .DS_Store
 .env
+.env.*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -29,4 +30,3 @@ secrets/**
 
 # Does more harm than good
 package-lock.json
-yarn.lock
