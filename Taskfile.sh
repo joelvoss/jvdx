@@ -53,15 +53,15 @@ function help {
 
 function now {
   time=$(date +'%H:%M:%S')
-  printf "\e[2m[$time]\e[0m"
+  printf "\033[2m[$time]\033[0m"
 }
 
 function checkmark {
-  printf "\e[1m\e[32m✓\e[0m"
+  printf "\033[1m\033[32m✓\033[0m"
 }
 
 TASK=${@:-default}
 
-printf "$(now) \e[1m\e[96mTaskfile\e[0m $TASK\n\n"
+printf "$(now) \033[1m\033[96mTaskfile\033[0m $TASK\n\n"
 "${@:-default}"
 printf "\n"
