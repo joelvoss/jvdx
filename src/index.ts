@@ -25,7 +25,13 @@ prog
       type: 'select',
       name: 'template',
       message: 'Pick a starter template',
-      choices: ['React', 'Javascript', 'Typescript', 'Empty'],
+      choices: [
+        { name: 'empty', message: 'Config only', value: 'empty' },
+        { name: 'javascript', message: 'Javascript', value: 'javascript' },
+        { name: 'typescript', message: 'typescript', value: 'typescript' },
+        { name: 'react-ts', message: 'React (TS)', value: 'react-ts' },
+        { name: 'react-js', message: 'React (JS)', value: 'react-js' },
+      ],
     }).catch(() => {
       process.exit(1);
     })) as { template: string };

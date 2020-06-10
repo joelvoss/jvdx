@@ -29,12 +29,13 @@ export async function setup(template: string, opts: any) {
   welcomeMsg('setup');
 
   let errorCount = 0;
-  const isReact = template === 'react';
+  const isReactTs = template === 'react-ts';
+  const isReactJs = template === 'react-js';
   const isJs = template === 'javascript';
   const isTs = template === 'typescript';
 
   // Scaffold the desired template
-  if (isReact || isJs || isTs) {
+  if (isReactTs || isReactJs || isJs || isTs) {
     try {
       await fs.copy(hereRelative(`../templates/${template}`), appDir, {
         overwrite: true,
@@ -68,7 +69,7 @@ export async function setup(template: string, opts: any) {
         `  extends: ['./node_modules/jvdx/dist/configs/eslintrc'],\n` +
         `};`,
     },
-    isTs || isReact
+    isTs || isReactTs
       ? {
           dest: path.resolve(appDir, './tsconfig.json'),
           content: fs.readFileSync(hereRelative('../configs/tsconfig')),
@@ -121,7 +122,7 @@ export async function setup(template: string, opts: any) {
       test: './Taskfile.sh test',
       prepublish: './Taskfile.sh build',
     },
-    ...(isReact
+    ...(isReactTs || isReactTs
       ? { peerDependencies: { react: '>=16.8', 'react-dom': '>=16.8' } }
       : {}),
     husky: {
@@ -143,12 +144,12 @@ export async function setup(template: string, opts: any) {
   const { cmd, args } = yarnOrNpm();
 
   const devDep = [
-    isTs || (isReact && !hasDep('@types/jest')) ? '@types/jest' : null,
+    isTs || (isReactTs && !hasDep('@types/jest')) ? '@types/jest' : null,
     isTs && !hasDep('typescript') ? 'typescript' : null,
-    isReact && !hasDep('react') ? 'react' : null,
-    isReact && !hasDep('react-dom') ? 'react-dom' : null,
-    isReact && !hasDep('@types/react') ? '@types/react' : null,
-    isReact && !hasDep('@types/react-dom') ? '@types/react-dom' : null,
+    (isReactTs || isReactJs) && !hasDep('react') ? 'react' : null,
+    (isReactTs || isReactJs) && !hasDep('react-dom') ? 'react-dom' : null,
+    isReactTs && !hasDep('@types/react') ? '@types/react' : null,
+    isReactTs && !hasDep('@types/react-dom') ? '@types/react-dom' : null,
   ]
     .filter(Boolean)
     .sort() as string[];
