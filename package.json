@@ -1,6 +1,6 @@
 {
   "name": "jvdx",
-  "version": "1.5.0",
+  "version": "2.0.0",
   "description": "CLI toolbox for common scripts and tasks for JS/TS projects",
   "author": "Joel Voß <mail@joelvoss.com>",
   "license": "MIT",
