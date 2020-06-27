@@ -1,4 +1,4 @@
-import foo from './foo.js';
+import foo from './foo';
 
 export const add = (a: number, b: number) => {
   return a + b;
