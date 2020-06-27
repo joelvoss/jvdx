@@ -28,7 +28,7 @@ prog
       choices: [
         { name: 'empty', message: 'Config only', value: 'empty' },
         { name: 'javascript', message: 'Javascript', value: 'javascript' },
-        { name: 'typescript', message: 'typescript', value: 'typescript' },
+        { name: 'typescript', message: 'Typescript', value: 'typescript' },
         { name: 'react-ts', message: 'React (TS)', value: 'react-ts' },
         { name: 'react-js', message: 'React (JS)', value: 'react-js' },
       ],
