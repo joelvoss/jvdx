@@ -45,7 +45,7 @@ function lint {
 }
 
 function test {
-  jvdx test
+  jvdx test "${@:1}"
 }
 
 function validate {
