@@ -54,6 +54,10 @@ module.exports = {
     // unreachable as a result
     ['babel-plugin-minify-dead-code-elimination'],
 
+    // Allows accessing deeply nested properties with the following
+    // syntax: `foo?.bar?.baz`
+    ['@babel/plugin-proposal-optional-chaining'],
+
     // Plugin to add a new resolver for your modules when compiling your code
     // using Babel, e.g. a new "root" directory defined by the `alias` setting
     alias ? ['babel-plugin-module-resolver', { root: ['./src'], alias }] : null,
