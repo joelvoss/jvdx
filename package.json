@@ -52,7 +52,7 @@
     "babel-plugin-transform-inline-environment-variables": "0.4.3",
     "babel-plugin-transform-react-remove-prop-types": "0.4.24",
     "babel-plugin-transform-rename-import": "2.3.0",
-    "browserslist": "4.14.5",
+    "browserslist": "4.16.5",
     "builtin-modules": "3.1.0",
     "chalk": "4.1.0",
     "copyfiles": "2.4.0",
