@@ -1,3 +1,7 @@
+**DEPRECATION WARNING**
+This package is deprecated. Please use [@jvdx/core](https://github.com/joelvoss/jvdx-core)
+as it's successor.
+
 # jvdx
 
 CLI toolbox for common scripts and tasks for JS/TS projects.
